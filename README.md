@@ -1,0 +1,188 @@
+# Pinterest Data Pipeline
+
+Pinterest processes billions of data points daily to enhance user experience and provide more value to its users. In this project, I created a similar system using the AWS Cloud. The project involves setting up data pipelines, processing streaming data from various sources, performing real-time analysis, and storing the data for further analysis.
+
+The project aims to demonstrate how to read data from Kinesis Data Streams in Databricks, clean the streaming data, and save it to Delta Tables. This involves setting up Kinesis streams, reading data from them, defining schemas, transforming the data, and finally saving it to Delta Tables.
+
+## Table of Contents
+1. [Description](#description)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. [File Structure](#file-structure)
+5. [License](#license)
+
+
+## Proposed Architecture
+
+<!-- Add Image here -->
+
+
+### What it Does
+- Cleans and preprocesses Pinterest post data.
+- Mounts an AWS S3 bucket to Databricks for data ingestion.
+- Submits Databricks jobs to perform specific tasks.
+- Streams data to AWS Kinesis for real-time processing.
+
+### Aim of the Project
+
+The project aims to showcase the end-to-end process of handling Pinterest data, including data cleaning, storage, analysis, and real-time streaming. By completing this project, I gained hands-on experience with tools like Databricks, Kafka, Apache Airflow, AWS S3, and Kinesis, and learned how to integrate them into a cohesive data pipeline.
+
+- Apache Kafka (AWS MSK)
+- Apache Spark (On Databricks Notebooks for Transformations)
+- Apache Airflow (AWS MWAA)
+- AWS Kinesis (Real time streaming infrastructure on AWS)
+- AWS API Gateway
+
+
+# What I learned
+In the process of working on the Pinterest Data Pipeline Project, I learned several key concepts and skills:
+
+1. **Data Cleaning and Preprocessing:** I gained experience in cleaning and preprocessing data using Spark on Databricks notebooks. This involved tasks such as filtering, transforming, and aggregating data to prepare it for further analysis.
+
+2. Integration with AWS Services: I learned how to integrate Databricks with AWS services such as S3 and Kinesis. This included mounting an S3 bucket to Databricks for data ingestion and streaming data to Kinesis for real-time processing.
+
+3. Orchestrating Workflows with Apache Airflow: I gained understanding and practice in orchestrating tasks and workflows using Apache Airflow. This involved creating a **Directed Acyclic Graph (DAG)** to schedule and manage the execution of data processing tasks.
+
+4. Streaming Data Processing: I learned about streaming data processing techniques and tools, particularly how to stream data to AWS Kinesis using Python scripts.
+
+5. Project Organisation and Documentation: I improved my skills in organising project files and documenting project components. This included creating a clear file structure, writing README files, and adding documentation to code files.
+
+### Lambda Architecture
+
+Lambda architecture is a way of processing massive quantities of data (i.e. "Big Data") that provides access to batch-processing and stream-processing methods with a hybrid approach. Lambda architecture is used to solve the problem of computing arbitrary functions. The lambda architecture itself is composed of 3 layers:
+
+Here's how Lambda Architecture fit into the project:
+
+<img src="images\lambda-architecture.png" alt="Lambda Architecture" width="406" height="370">
+
+Figure 1: Real-Time Big Data Lambda Architecture
+
+1. Batch Layer: The project involves batch processing for tasks such as data cleaning, preprocessing, and analysis. Databricks notebooks and Apache Spark used for these batch processing tasks. The cleaned and processed data stored in a data lake, such as AWS S3, for further analysis or serving batch queries.
+
+2. Speed Layer: The project involves streaming data processing using AWS Kinesis for real-time or near-real-time data ingestion and processing. Python scripts and Databricks notebooks used to stream data to Kinesis streams. This layer would handle immediate processing and analysis of incoming data streams.
+
+3. Serving Layer: The project involve serving queries against both the batch views and real-time views of the data. Delta tables in Databricks serve as the serving layer, providing low-latency access to the processed data for analytics and downstream applications.
+
+## Installation
+To run the project locally, follow these steps:
+1. Clone the repository: 
+
+```sh
+git clone https://github.com/emma-luk/pinterest-data-pipeline488
+```
+
+2. Install the required dependencies: 
+
+```
+pip install -r requirements.txt
+```
+
+
+## Provisioning Resources
+
+1. AWS (Amazon Web Services): AWS provides various services under a pay-as-you-go pricing model, where you pay only for the resources you use. AWS offers different pricing options for each service, including on-demand pricing, reserved instances, and spot instances. Additionally, AWS provides a free tier for new customers to get started with some of its services.
+
+- Provisioned a VPC, EC2, MSK cluster, S3 bucekt, API Gateway,....
+
+VPC
+- Provisioned due to security reasons to hold all my infrastructure
+
+EC2
+- To hold my kafka configurations
+
+MSK
+- For my kafka clsuter
+
+2. S3 (Amazon Simple Storage Service): S3 offers a simple pricing model based on the amount of data stored, the number of requests made, and any additional features used (such as data transfer and data management features). Pricing may vary depending on the storage class chosen (e.g., Standard, Intelligent-Tiering, Glacier).
+
+- Kafka topics
+
+
+- DAG
+
+
+3. Kinesis: Kinesis offers a pricing model based on the volume of data ingested, the volume of data processed, and any additional features used (such as data retention). Pricing may vary depending on the specific Kinesis service used (e.g., Kinesis Data Streams, Kinesis Data Firehose, Kinesis Data Analytics).
+
+4. Databricks: Databricks provides a unified analytics platform based on Apache Spark, offered as a fully managed service on AWS. Databricks offers pricing based on the resources used (such as compute instances and storage) and the edition chosen (e.g., Community Edition, Standard Edition, Premium Edition).
+
+
+## Usage
+
+### Key Scripts
+
+1. The user_posting_emulation_streaming_infinite.py
+
+This script connects to a MySQL database, fetches random rows from three tables (pinterest_data, geolocation_data, and user_data), and sends the data to corresponding Kinesis streams via HTTP requests.
+
+2. The user_posting_emulation_streaming.py 
+
+This Python script simulates user posting data to three different Kinesis streams corresponding to Pinterest tables: pin_stream, geo_stream, and user_stream.
+
+3. The user_posting_emulation.py
+
+This script connects to a MySQL database and retrieves random rows from three tables (pinterest_data, geolocation_data, and user_data). It then transforms the data, converting any datetime objects to strings, and sends the transformed data to corresponding Kafka topics via an API.
+
+4. The clean-cataframe-pinterest-posts.ipynb
+
+This notebook performs various data cleaning and analysis tasks on three DataFrames (df_pin, df_geo, df_user) representing Pinterest posts, geolocation data, and user data, respectively.
+
+5. The mount-AWS-S3-bucket-t-Databricks.ipynb
+
+This notebook facilitates the mounting of an AWS S3 bucket, reading data from the mounted bucket into Spark dataframes, and provides an optional step to unmount the bucket once the required operations are completed.
+
+6. The 0af0031518e7_dag.py
+
+This script defines an Apache Airflow DAG (Directed Acyclic Graph) that orchestrates the execution of tasks related to running a Databricks notebook.
+
+### Usage Instructions
+
+1. Set up AWS services such as Kinesis Data Streams, Lambda Architecture, and S3.
+2. Configure AWS credentials and permissions.
+
+3. Run the emulation script to send data to Kafka and S3 bucket for batch streaming.
+
+```
+python user_posting_emulation.py
+```
+> Note: Make sure that your REST Proxy is running on the EC2. You need to run this command in the confluent/bin folder: `./kafka-rest-start /home/ec2-user/confluent-7.2.0/etc/kafka-rest/kafka-rest.properties`
+
+
+4. Run the emulation script to send data to Kinesis for real time streaming.
+```
+python user_posting_emulation_streaming.py
+```
+
+5. Run the data processing scripts to ingest, transform, and analyse streaming data.
+6. Create a Delta table to store authentication credentials in Databricks.
+7. Set up Kinesis Data Streams in AWS.
+8. Run the notebooks in Databricks to read data from Kinesis streams, define schemas, transform the data, and save it to Delta Tables.
+
+- Open the Databricks notebooks (`notebooks/`) in your Databricks workspace and execute the cells to perform data cleaning and analysis tasks.
+- The Airflow DAG (`0af0031518e7_dag.py`) to orchestrate tasks and workflows.
+
+
+## File Structure
+
+The project directory structure is as follows:
+project/
+├── images
+├── notebooks/ 
+│   ├── user_posting_emulation_streaming_infinite.py
+│   ├── user_posting_emulation_streaming.py
+│   ├── user_posting_emulation.py
+│   ├── clean-cataframe-pinterest-posts.ipynb
+│   ├── mount-AWS-S3-bucket-t-Databricks.ipynb
+│   └── 0af0031518e7_dag.py
+├── requirements.txt
+└── README.md 
+
+<img src="images/project.png" alt="project" width="406" height="">
+
+Figure 2: Project Directory Structure
+
+## License
+This project is based around AWS services and its licencising protocols accordingly.
+
+
+
+
