@@ -127,7 +127,7 @@ Lambda architecture is a way of processing massive quantities of data (i.e. "Big
 
 Here's how Lambda Architecture fit into the project:
 
-<img src="images\lambda-architecture.png" alt="Lambda Architecture" width="406" height="370">
+<img src="images\lambda-architecture.png" alt="Lambda Architecture" width="80%" height="80%">
 
 Figure 1: Real-Time Big Data Lambda Architecture
 
