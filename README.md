@@ -15,7 +15,7 @@ The project aims to demonstrate how to read data from Kinesis Data Streams in Da
 ## Proposed Architecture
 
 <!-- Add Image here cloud-pinterest-pipeline.png -->
-<img src="images\cloud-pinterest-pipeline.png" alt="Lambda Architecture" width="406" height="370">
+<img src="images\cloud-pinterest-pipeline.png" alt="Lambda Architecture" width="90%" height="90%">
 
 The architecture leverages several AWS services to create a robust data pipeline:
 
@@ -127,7 +127,7 @@ Lambda architecture is a way of processing massive quantities of data (i.e. "Big
 
 Here's how Lambda Architecture fit into the project:
 
-<img src="images\lambda-architecture.png" alt="Lambda Architecture" width="80%" height="80%">
+<img src="images\lambda-architecture.png" alt="Lambda Architecture" width="95%" height="95%">
 
 Figure 1: Real-Time Big Data Lambda Architecture
 
