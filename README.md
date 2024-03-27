@@ -1,9 +1,5 @@
 # Pinterest Data Pipeline
 
-Pinterest processes billions of data points daily to enhance user experience and provide more value to its users. In this project, I created a similar system using the AWS Cloud. The project involves setting up data pipelines, processing streaming data from various sources, performing real-time analysis, and storing the data for further analysis.
-
-The project aims to demonstrate how to read data from Kinesis Data Streams in Databricks, clean the streaming data, and save it to Delta Tables. This involves setting up Kinesis streams, reading data from them, defining schemas, transforming the data, and finally saving it to Delta Tables.
-
 ## Table of Contents
 1. [Description](#description)
 2. [Installation](#installation)
@@ -11,11 +7,85 @@ The project aims to demonstrate how to read data from Kinesis Data Streams in Da
 4. [File Structure](#file-structure)
 5. [License](#license)
 
+## Description
+Pinterest processes billions of data points daily to enhance user experience and provide more value to its users. In this project, I created a similar system using the AWS Cloud. The project involves setting up data pipelines, processing streaming data from various sources, performing real-time analysis, and storing the data for further analysis.
+
+The project aims to demonstrate how to read data from Kinesis Data Streams in Databricks, clean the streaming data, and save it to Delta Tables. This involves setting up Kinesis streams, reading data from them, defining schemas, transforming the data, and finally saving it to Delta Tables. The Pinterest Data Pipeline project is designed to simulate how large social media platforms like Pinterest manage data. It provides a hands-on experience with data collection, processing, storage, and analysis in a cloud environment like AWS.
 
 ## Proposed Architecture
 
-<!-- Add Image here -->
+<!-- Add Image here cloud-pinterest-pipeline.png -->
+<img src="images\cloud-pinterest-pipeline.png" alt="Lambda Architecture" width="406" height="370">
 
+The architecture leverages several AWS services to create a robust data pipeline:
+
+- **Amazon RDS:** Stores initial Pinterest data (posts, user information, and geolocation).
+- **Apache Kafka:** A distributed streaming platform for real-time data ingestion and processing.
+- **Amazon S3:** Securely stores processed data for later analysis.
+- **API Gateway:** Provides an interface for data streaming into the Kafka cluster.
+- **Databricks:** A cloud-based platform for running Apache Spark analytics on the stored data.
+- **Managed Workflows for Apache Airflow (MWAA):** Orchestrates complex workflows using Directed Acyclic Graphs (DAGs) to automate data processing and analysis.
+- **AWS Kinesis Data Streams:** (Optional) For real-time data management.
+
+## Components and Configuration
+
+1. **AWS Setup (IAM, VPC & EC2)**
+
+- Create an IAM user with least privilege and an IAM role with appropriate permissions for accessing AWS services.
+- Set up a VPC, subnets, and a security group for traffic control.
+- Launch an EC2 instance with an SSH client.
+
+2. **MSK Cluster Configuration**
+
+- Create an MSK cluster (Apache Kafka) on AWS for real-time data processing.
+- Note down the Bootstrap servers string and Apache ZooKeeper connection information.
+
+3. **Kafka Setup on EC2**
+
+- Install Java and download Kafka on the EC2 instance.
+- Install the IAM MSK authentication package in the libs folder to connect to MSK clusters with IAM authentication.
+- Configure the Kafka client to use AWS IAM using a client.properties file.
+- Create Kafka topics (<UserID>.pin, <UserID>.geo, <UserID>.user) to store specific data streams.
+
+4. **S3 Bucket Creation**
+
+- Create an S3 bucket (user-<UserID>-bucket) to store processed data.
+- Configure IAM roles for writing access to the bucket or use a VPC Endpoint.
+
+5. **MSK Connect**
+
+- Set up the Confluent.io Amazon S3 Connector package to enable data transfer from Kafka to S3.
+- Create a custom plugin and a connector in MSK Connect to automatically store Kafka data in the S3 bucket.
+
+6. **API Gateway**
+
+- Create a REST API in API Gateway to receive data streams from the batch_streaming.py script.
+Configure a resource with a PROXY integration for the API.
+- Create methods with the HTTP method ANY and configure proxy integration.
+- Stage and deploy the API to implement the changes and note down the invoke URL.
+
+7. **Kafka REST Proxy (Optional)**
+
+- Download the Confluent.io Amazon S3 Connector package on a client EC2 machine to communicate with the MSK cluster.
+- Configure the REST proxy to communicate with the MSK cluster and perform IAM authentication using a kafka-rest.properties file.
+- Start the REST proxy to allow data consumption from the API and storage in the S3 bucket.
+
+8. **Databricks**
+
+- Create a Databricks account, a cluster, and access key/secret key credentials from the IAM user with S3 access.
+- Upload an authentication_credentials.csv file containing the keys.
+- In a Databricks notebook, use the access_keys.ipynb and mount_s3_to_databricks.ipynb scripts to access the AWS access keys and mount the S3 bucket for data analysis.
+
+9. **MWAA (Optional)**
+
+- Create an MWAA environment (Databricks-Airflow-env) to orchestrate workflows and manage data tasks.
+- Set up S3 bucket configuration for MWAA with a bucket named mwaa-dags-bucket (containing a dags folder) and versioning enabled.
+- Configure Airflow UI access and integrate with Databricks using an API access token created in Databricks.
+- (Optional) Install Airflow Provider Package if needed for Databricks connection type.
+
+10. **AWS Kinesis Data Streams (Optional)**
+
+- Create data streams (streaming-<UserID>-pin, streaming-<UserID>-geo, streaming-<UserID>-user) for real-time data management.
 
 ### What it Does
 - Cleans and preprocesses Pinterest post data.
@@ -33,19 +103,23 @@ The project aims to showcase the end-to-end process of handling Pinterest data, 
 - AWS Kinesis (Real time streaming infrastructure on AWS)
 - AWS API Gateway
 
+# What I Learned
+The Pinterest Data Pipeline Project provided a valuable hands-on experience in building a data processing infrastructure on AWS. Here are the key takeaways that will benefit me in future data engineering projects:
 
-# What I learned
-In the process of working on the Pinterest Data Pipeline Project, I learned several key concepts and skills:
+1. **Data Cleaning and Preprocessing with Apache Spark:** I gained proficiency in cleaning and preparing data for analysis using Spark on Databricks notebooks. This included techniques like filtering out irrelevant data, transforming data structures, and aggregating data for efficient processing.
 
-1. **Data Cleaning and Preprocessing:** I gained experience in cleaning and preprocessing data using Spark on Databricks notebooks. This involved tasks such as filtering, transforming, and aggregating data to prepare it for further analysis.
+2. AWS Service Integration: I learned how to integrate Databricks with various AWS services to create a comprehensive data pipeline. This project specifically involved working with:
+    - Amazon S3: For storing and managing large datasets in a secure and scalable way.
+    - Amazon Kinesis Data Streams (Optional): For real-time data ingestion and processing (if you used this component).
+    - Amazon Simple Storage Service (Amazon S3): Another reference to Amazon S3, potentially for storing processed data after analysis.
 
-2. Integration with AWS Services: I learned how to integrate Databricks with AWS services such as S3 and Kinesis. This included mounting an S3 bucket to Databricks for data ingestion and streaming data to Kinesis for real-time processing.
+3. Workflow Orchestration with Apache Airflow: I deepened my understanding of Apache Airflow and its capabilities in orchestrating data processing workflows. This included creating **Directed Acyclic Graphs (DAGs)** to schedule and manage the execution of various data processing tasks in a defined sequence, using AWS Glue or AWS Step Functions (if applicable).
 
-3. Orchestrating Workflows with Apache Airflow: I gained understanding and practice in orchestrating tasks and workflows using Apache Airflow. This involved creating a **Directed Acyclic Graph (DAG)** to schedule and manage the execution of data processing tasks.
+4. Streaming Data Processing Techniques: The project exposed me to streaming data processing techniques, particularly leveraging Python scripts to stream data to AWS Kinesis for near-real-time processing (optional).
 
-4. Streaming Data Processing: I learned about streaming data processing techniques and tools, particularly how to stream data to AWS Kinesis using Python scripts.
+5. Project Organisation and Documentation Best Practices: I refined my skills in organising project files and creating comprehensive documentation. This involved establishing a clear file structure, writing informative README files, and adding detailed comments within code for better maintainability.
 
-5. Project Organisation and Documentation: I improved my skills in organising project files and documenting project components. This included creating a clear file structure, writing README files, and adding documentation to code files.
+By working on this project, I've gained valuable experience in data wrangling, cloud-based data management with AWS services, and workflow automation using Apache Airflow. These skills will be instrumental in building robust data pipelines for future projects.
 
 ### Lambda Architecture
 
@@ -80,11 +154,44 @@ pip install -r requirements.txt
 
 ## Provisioning Resources
 
+1. AWS (Amazon Web Services)
+
+AWS offers a pay-as-you-go pricing model, where you only pay for the resources you use. They provide various services, each with its own pricing options (on-demand, reserved instances, spot instances). Additionally, AWS offers a free tier for new customers to explore some services.
+
+Provisioned:
+
+- Virtual Private Cloud (VPC): Enhances security by isolating your infrastructure within a logically defined network.
+- EC2 Instance: Hosted virtual servers to run your Kafka configurations.
+- MSK Cluster (Apache Kafka): Manages real-time data ingestion and processing.
+- S3 Bucket: Securely stores processed data for later analysis.
+- API Gateway: Provides an interface for data streaming into Kafka.
+- Databricks: Cloud-based platform for running Apache Spark analytics on stored data.
+- Managed Workflows for Apache Airflow (MWAA) (Optional): Orchestrates complex workflows using Directed Acyclic Graphs (DAGs) to automate data processing and analysis.
+- AWS Kinesis Data Streams (Optional): Enables real-time data management.
+
+2. S3 (Amazon Simple Storage Service)
+
+S3 offers a simple pricing model based on data storage, requests made, and additional features used (data transfer, data management). Pricing varies depending on the chosen storage class (Standard, Intelligent-Tiering, Glacier).
+
+- Stores Kafka topics (optional)
+- Stores DAGs (optional)
+
+3. Kinesis
+
+Kinesis pricing is based on data volume (ingested and processed), and any additional features used (data retention). It varies depending on the specific Kinesis service used (Kinesis Data Streams, Kinesis Data Firehose, Kinesis Data Analytics).
+
+4. Databricks
+
+Databricks provides a unified Apache Spark analytics platform. It's offered as a fully managed service on AWS with pricing based on used resources (compute instances, storage) and the chosen edition (Community, Standard, Premium).
+
+
+
+
 1. AWS (Amazon Web Services): AWS provides various services under a pay-as-you-go pricing model, where you pay only for the resources you use. AWS offers different pricing options for each service, including on-demand pricing, reserved instances, and spot instances. Additionally, AWS provides a free tier for new customers to get started with some of its services.
 
 - Provisioned a VPC, EC2, MSK cluster, S3 bucekt, API Gateway,....
 
-VPC
+Virtual Private Cloud (VPC)
 - Provisioned due to security reasons to hold all my infrastructure
 
 EC2
