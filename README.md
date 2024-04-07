@@ -282,7 +282,7 @@ python user_posting_emulation.py
 
 4. Run the emulation script to send data to Kinesis for real time streaming.
 ```
-python user_posting_emulation_streaming.py
+python user_posting_emulation_streaming_infinite.py
 ```
 
 5. Run the data processing scripts to ingest, transform, and analyse streaming data.
