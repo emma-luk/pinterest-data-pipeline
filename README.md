@@ -168,7 +168,7 @@ To run the project locally, follow these steps:
 1. Clone the repository: 
 
 ```sh
-git clone https://github.com/emma-luk/pinterest-data-pipeline488
+git clone https://github.com/emma-luk/pinterest-data-pipeline
 ```
 
 2. Install the required dependencies: 
@@ -290,24 +290,34 @@ python user_posting_emulation_streaming_infinite.py
 7. Set up Kinesis Data Streams in AWS.
 8. Run the notebooks in Databricks to read data from Kinesis streams, define schemas, transform the data, and save it to Delta Tables.
 
-- Open the Databricks notebooks (`notebooks/`) in your Databricks workspace and execute the cells to perform data cleaning and analysis tasks.
+- Open the Databricks notebooks (`databricks_notebooks/`) in your Databricks workspace and execute the cells to perform data cleaning and analysis tasks.
 - The Airflow DAG (`0af0031518e7_dag.py`) to orchestrate tasks and workflows.
 
 
 ## File Structure
 
-The project directory structure is as follows:
 project/
-├── images
-├── notebooks/ 
-│   ├── user_posting_emulation_streaming_infinite.py
-│   ├── user_posting_emulation_streaming.py
-│   ├── user_posting_emulation.py
-│   ├── clean-cataframe-pinterest-posts.ipynb
-│   ├── mount-AWS-S3-bucket-t-Databricks.ipynb
-│   └── 0af0031518e7_dag.py
-├── requirements.txt
-└── README.md 
+├── databricks_notebooks/
+│   ├── data_cleaning/
+│   │   ├── clean-cataframe-pinterest-posts.ipynb
+│   │   ├── data_cleaning_functions.ipynb
+│   │   └── data_pyspark.sq_manipulation_tasks_pinterest-posts.ipynb
+│   ├── data_processing/
+│   │   ├── mount-AWS-S3-bucket-to-Databricks.ipynb
+│   │   ├── read_access_keys.ipynb
+│   │   └── read_data_from_kinesis_streams_in_databricks.ipynb
+│   └── user_posting_emulation/
+│       └── user_posting_emulation_streaming_infinite.py
+├── images/
+├── utils/
+│   ├── db_creds.yaml
+│   └── db_utils.py
+├── .gitignore
+├── 0af0031518e7_dag.py
+├── README.md
+└── requirements.txt
+
+
 
 <img src="images/project.png" alt="project" width="406" height="">
 
