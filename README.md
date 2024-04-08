@@ -147,6 +147,18 @@ The Pinterest Data Pipeline Project provided a valuable hands-on experience in b
 
 By working on this project, I've gained valuable experience in data wrangling, cloud-based data management with AWS services, and workflow automation using Apache Airflow. These skills will be instrumental in building robust data pipelines for future projects.
 
+## Databricks Cleaning and Analysis
+In this project, data cleaning was performed in Databricks using Spark, followed by the application of SQL queries for insightful analysis. Here is a list of tasks executed, along with a few examples of the extracted information.
+
+### Data Cleaning:
+Note: Task 1-3 was for cleaning the data and more details can be found in data_cleaning_functions.ipynb (https://github.com/emma-luk/pinterest-data-pipeline/blob/main/databricks_notebooks/data_cleaning_functions.ipynb) file
+
+## Advanced DataFrame Manipulations with PySpark: Joining, Grouping, Filtering, and Window Functions
+### Data Processing:
+Task 4: Find the most popular category in each country
+Task 5: Find which was the most popular category each year
+([databricks_notebooks/data_pyspark.sq_manipulation_tasks_pinterest-posts.ipynb](https://github.com/emma-luk/pinterest-data-pipeline/blob/main/databricks_notebooks/data_pyspark.sq_manipulation_tasks_pinterest-posts.ipynb))
+
 ### Lambda Architecture
 
 Lambda architecture is a way of processing massive quantities of data (i.e. "Big Data") that provides access to batch-processing and stream-processing methods with a hybrid approach. Lambda architecture is used to solve the problem of computing arbitrary functions. The lambda architecture itself is composed of 3 layers:
@@ -209,9 +221,6 @@ Kinesis pricing is based on data volume (ingested and processed), and any additi
 4. Databricks
 
 Databricks provides a unified Apache Spark analytics platform. It's offered as a fully managed service on AWS with pricing based on used resources (compute instances, storage) and the chosen edition (Community, Standard, Premium).
-
-
-
 
 1. AWS (Amazon Web Services): AWS provides various services under a pay-as-you-go pricing model, where you pay only for the resources you use. AWS offers different pricing options for each service, including on-demand pricing, reserved instances, and spot instances. Additionally, AWS provides a free tier for new customers to get started with some of its services.
 
